@@ -218,10 +218,11 @@ function enumerateDeduce(
       const x = queue.pop();
       if (x === undefined) break;
       members.push(x);
-      for (const y of adjList[x] ?? []) if (comp[y] === -1) {
-        comp[y] = id;
-        queue.push(y);
-      }
+      for (const y of adjList[x] ?? [])
+        if (comp[y] === -1) {
+          comp[y] = id;
+          queue.push(y);
+        }
     }
     components.push(members);
   }

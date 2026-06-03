@@ -185,7 +185,17 @@ export function useGame(opts: Opts) {
       buzz('Light');
       setBoard(res.board);
     },
-    [board, difficulty, status, flagMode, opts.source.kind, beginIfNeeded, buzz, finishLoss, finishWin],
+    [
+      board,
+      difficulty,
+      status,
+      flagMode,
+      opts.source.kind,
+      beginIfNeeded,
+      buzz,
+      finishLoss,
+      finishWin,
+    ],
   );
 
   const toggleFlag = useCallback(
@@ -271,7 +281,8 @@ export function useGame(opts: Opts) {
   const totalSafe = difficulty.rows * difficulty.cols - difficulty.mines;
   const progress = useMemo(() => {
     let revealed = 0;
-    for (const row of board) for (const cell of row) if (cell.isRevealed && !cell.isMine) revealed++;
+    for (const row of board)
+      for (const cell of row) if (cell.isRevealed && !cell.isMine) revealed++;
     return Math.min(1, revealed / totalSafe);
   }, [board, totalSafe]);
 

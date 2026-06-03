@@ -86,7 +86,11 @@ export function GridIcon({ size = 20, className }: IconProps) {
 export function FlameIcon({ size = 18, className }: IconProps) {
   return (
     <S size={size} className={className}>
-      <path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-1 .3-2 1-3 .2 1 .8 1.5 1.5 1.5C10 7 11 5 12 3z" fill="currentColor" stroke="none" />
+      <path
+        d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-1 .3-2 1-3 .2 1 .8 1.5 1.5 1.5C10 7 11 5 12 3z"
+        fill="currentColor"
+        stroke="none"
+      />
     </S>
   );
 }
@@ -160,7 +164,11 @@ export function HeartShieldIcon({ size = 20, className }: IconProps) {
   return (
     <S size={size} className={className}>
       <path d="M12 3l7 2.5v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9v-5z" />
-      <path d="M9.3 11.4c0-1 .8-1.6 1.5-1.6.5 0 .9.2 1.2.6.3-.4.7-.6 1.2-.6.7 0 1.5.6 1.5 1.6 0 1.4-1.8 2.6-2.7 3.2-.9-.6-2.7-1.8-2.7-3.2z" fill="currentColor" stroke="none" />
+      <path
+        d="M9.3 11.4c0-1 .8-1.6 1.5-1.6.5 0 .9.2 1.2.6.3-.4.7-.6 1.2-.6.7 0 1.5.6 1.5 1.6 0 1.4-1.8 2.6-2.7 3.2-.9-.6-2.7-1.8-2.7-3.2z"
+        fill="currentColor"
+        stroke="none"
+      />
     </S>
   );
 }

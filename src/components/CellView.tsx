@@ -64,7 +64,10 @@ export function CellView({ cell, onReveal, onFlag, onChord }: Props) {
         onPointerLeave={clearTimer}
         onContextMenu={(e) => e.preventDefault()}
         className={`${base} transition-transform active:scale-95`}
-        style={{ background: 'var(--color-tile)', borderBottom: '2px solid var(--color-tile-edge)' }}
+        style={{
+          background: 'var(--color-tile)',
+          borderBottom: '2px solid var(--color-tile-edge)',
+        }}
         aria-label="hidden cell"
       >
         {cell.isFlagged && <FlagIcon size={15} className="text-[#f5a623]" />}

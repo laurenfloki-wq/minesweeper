@@ -1,0 +1,9 @@
+dist
+coverage
+node_modules
+tools/*.cjs
+android
+ios
+package-lock.json
+assets
+*.md

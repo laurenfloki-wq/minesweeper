@@ -43,7 +43,11 @@ export function GalleryScreen({ onExit }: { onExit: () => void }) {
             }
             return (
               <div key={e.date} className="rounded-xl overflow-hidden border border-[#21304d]">
-                <SceneView sceneId={e.sceneId} progress={1} className="w-full aspect-[16/10] block" />
+                <SceneView
+                  sceneId={e.sceneId}
+                  progress={1}
+                  className="w-full aspect-[16/10] block"
+                />
                 <div className="px-1.5 py-1 text-[9px] font-mono text-[#6b7896] truncate bg-[#0e1626]">
                   {e.date.slice(5)}
                 </div>
@@ -74,7 +78,10 @@ export function GalleryScreen({ onExit }: { onExit: () => void }) {
                   disabled={owned}
                   onClick={() => buy(t.id)}
                   className="rounded-lg px-3 py-1.5 text-sm font-medium"
-                  style={{ background: owned ? 'transparent' : '#f5a623', color: owned ? '#6ee7b7' : '#3a2606' }}
+                  style={{
+                    background: owned ? 'transparent' : '#f5a623',
+                    color: owned ? '#6ee7b7' : '#3a2606',
+                  }}
                 >
                   {owned ? 'Owned' : t.price}
                 </button>
