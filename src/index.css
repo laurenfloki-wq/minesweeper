@@ -1,0 +1,64 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-display: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'DM Mono', ui-monospace, monospace;
+  --font-sans: 'Bricolage Grotesque Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink: #020617;
+  --color-ink-2: #0b1220;
+  --color-panel: #131c30;
+  --color-panel-2: #15203a;
+  --color-tile: #1e2a45;
+  --color-tile-edge: #11192c;
+  --color-honey: #f5a623;
+  --color-cool: #7dd3fc;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #020617;
+  color: #e7ecf5;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  -webkit-touch-callout: none;
+}
+
+@keyframes reveal-pop {
+  0% {
+    transform: scale(0.78);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.reveal-pop {
+  animation: reveal-pop 0.16s ease-out;
+}
+
+@keyframes fade-up {
+  0% {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.fade-up {
+  animation: fade-up 0.3s ease-out both;
+}
