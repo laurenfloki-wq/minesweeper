@@ -7,7 +7,7 @@ import { shareText, fmtTime } from '../lib/share';
 interface Stat {
   label: string;
   value: string;
-  accent?: string;
+  accent?: string | undefined;
 }
 
 interface Props {
@@ -102,7 +102,7 @@ export function WinCard({
   );
 }
 
-function Cell({ label, value, accent }: { label: string; value: string; accent?: string }) {
+function Cell({ label, value, accent }: { label: string; value: string; accent?: string | undefined }) {
   return (
     <div className="rounded-xl bg-[#131c30] border border-[#21304d] py-3 text-center">
       <div className="font-mono text-base" style={{ color: accent ?? '#e7ecf5' }}>
