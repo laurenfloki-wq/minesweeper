@@ -19,7 +19,7 @@
   "dependencies": {
     "@capacitor/android": "^8.0.0",
     "@capacitor/app": "^8.0.0",
-    "@capacitor/core": "^8.0.0",
+    "@capacitor/core": "^8.4.0",
     "@capacitor/haptics": "^8.0.0",
     "@capacitor/status-bar": "^8.0.0",
     "@fontsource-variable/bricolage-grotesque": "^5.0.0",
