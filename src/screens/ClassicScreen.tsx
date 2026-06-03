@@ -38,7 +38,11 @@ export function ClassicScreen({ onExit }: { onExit: () => void }) {
         seconds={seconds}
         stats={[
           { label: 'best', value: best ? fmtTime(best) : '—', accent: '#6ee7b7' },
-          { label: record ? 'new record' : difficulty.name.toLowerCase(), value: record ? 'yes' : difficulty.name, accent: record ? '#f5a623' : undefined },
+          {
+            label: record ? 'new record' : difficulty.name.toLowerCase(),
+            value: record ? 'yes' : difficulty.name,
+            accent: record ? '#f5a623' : undefined,
+          },
         ]}
         primaryLabel="Play again"
         onPrimary={() => start(diffId)}

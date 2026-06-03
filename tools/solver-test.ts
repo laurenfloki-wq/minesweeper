@@ -1,7 +1,7 @@
 import { DIFFICULTIES } from '../src/game/difficulties';
 import { solveNoGuess, type SolveGrid } from '../src/game/solver';
 import { generateNoGuessWithStats, generateDaily } from '../src/game/generator';
-import { mulberry32, systemRng, randInt, type Rng } from '../src/lib/rng';
+import { systemRng, randInt, type Rng } from '../src/lib/rng';
 import type { Difficulty } from '../src/game/types';
 
 let pass = 0;
@@ -168,7 +168,8 @@ for (const d of DIFFICULTIES) {
       for (let dc = -1; dc <= 1; dc++) {
         const nr = result.openR + dr;
         const nc = result.openC + dc;
-        if (nr >= 0 && nr < d.rows && nc >= 0 && nc < d.cols && result.board[nr][nc].isMine) safe = false;
+        if (nr >= 0 && nr < d.rows && nc >= 0 && nc < d.cols && result.board[nr][nc].isMine)
+          safe = false;
       }
     if (safe) firstClickSafe++;
     // Adjacency correctness + mine count.
@@ -186,7 +187,8 @@ for (const d of DIFFICULTIES) {
             if (!dr && !dc) continue;
             const nr = r + dr;
             const nc = c + dc;
-            if (nr >= 0 && nr < d.rows && nc >= 0 && nc < d.cols && result.board[nr][nc].isMine) n++;
+            if (nr >= 0 && nr < d.rows && nc >= 0 && nc < d.cols && result.board[nr][nc].isMine)
+              n++;
           }
         if (n !== result.board[r][c].adjacent) adjBad = true;
       }

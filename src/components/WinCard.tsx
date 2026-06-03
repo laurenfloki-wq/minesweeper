@@ -93,7 +93,11 @@ export function WinCard({
           {primaryLabel}
         </button>
         {secondaryLabel && onSecondary && (
-          <button type="button" onClick={onSecondary} className="w-full py-2 text-sm text-[#8593ad]">
+          <button
+            type="button"
+            onClick={onSecondary}
+            className="w-full py-2 text-sm text-[#8593ad]"
+          >
             {secondaryLabel}
           </button>
         )}
@@ -102,7 +106,15 @@ export function WinCard({
   );
 }
 
-function Cell({ label, value, accent }: { label: string; value: string; accent?: string | undefined }) {
+function Cell({
+  label,
+  value,
+  accent,
+}: {
+  label: string;
+  value: string;
+  accent?: string | undefined;
+}) {
   return (
     <div className="rounded-xl bg-[#131c30] border border-[#21304d] py-3 text-center">
       <div className="font-mono text-base" style={{ color: accent ?? '#e7ecf5' }}>

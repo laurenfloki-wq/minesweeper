@@ -3,12 +3,7 @@ import { GameView } from '../components/GameView';
 import { boardSource } from '../game/boardSource';
 import { difficultyById } from '../game/difficulties';
 import { sceneForIndex } from '../game/scenes';
-import {
-  addCoins,
-  getCoins,
-  getEndlessBest,
-  recordEndlessLevel,
-} from '../lib/storage';
+import { addCoins, getCoins, getEndlessBest, recordEndlessLevel } from '../lib/storage';
 import { maybeShowInterstitial } from '../lib/ads';
 import type { GeneratedBoard } from '../game/generator';
 import { InfinityIcon } from '../components/icons';

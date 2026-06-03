@@ -20,7 +20,15 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
   );
 }
 
-function Row({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
+function Row({
+  title,
+  desc,
+  children,
+}: {
+  title: string;
+  desc: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-2xl border border-[#21304d] bg-[#131c30] p-4 flex items-center justify-between gap-4">
       <div>
@@ -50,7 +58,10 @@ export function SettingsScreen({ onExit }: { onExit: () => void }) {
           <Toggle on={s.noGuess} onClick={() => update({ noGuess: !s.noGuess })} />
         </Row>
         <Row title="Flag mode default" desc="Start each game with flag mode on">
-          <Toggle on={s.flagModeDefault} onClick={() => update({ flagModeDefault: !s.flagModeDefault })} />
+          <Toggle
+            on={s.flagModeDefault}
+            onClick={() => update({ flagModeDefault: !s.flagModeDefault })}
+          />
         </Row>
         <Row title="Haptics" desc="Vibrate on reveal, flag, win and loss">
           <Toggle on={s.haptics} onClick={() => update({ haptics: !s.haptics })} />
@@ -66,7 +77,10 @@ export function SettingsScreen({ onExit }: { onExit: () => void }) {
                 setS(getSettings());
               }}
               className="rounded-lg px-3 py-1.5 text-sm font-medium"
-              style={{ background: adsRemoved ? 'transparent' : '#f5a623', color: adsRemoved ? '#6ee7b7' : '#3a2606' }}
+              style={{
+                background: adsRemoved ? 'transparent' : '#f5a623',
+                color: adsRemoved ? '#6ee7b7' : '#3a2606',
+              }}
             >
               {adsRemoved ? 'Removed' : '$3.99'}
             </button>

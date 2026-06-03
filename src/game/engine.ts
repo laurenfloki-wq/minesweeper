@@ -12,9 +12,7 @@ function emptyCell(): Cell {
 }
 
 export function createEmptyBoard(d: Difficulty): Board {
-  return Array.from({ length: d.rows }, () =>
-    Array.from({ length: d.cols }, emptyCell),
-  );
+  return Array.from({ length: d.rows }, () => Array.from({ length: d.cols }, emptyCell));
 }
 
 function cloneBoard(board: Board): Board {
@@ -46,12 +44,7 @@ function neighbours(r: number, c: number, rows: number, cols: number): [number, 
 // Place mines after the first reveal so the first click is always safe and
 // (where space allows) opens an area. The clicked cell and its neighbours are
 // excluded from mine placement.
-export function placeMines(
-  board: Board,
-  d: Difficulty,
-  safeR: number,
-  safeC: number,
-): Board {
+export function placeMines(board: Board, d: Difficulty, safeR: number, safeC: number): Board {
   const next = cloneBoard(board);
   const safe = new Set<string>([`${safeR},${safeC}`]);
   for (const [nr, nc] of neighbours(safeR, safeC, d.rows, d.cols)) {

@@ -1,6 +1,13 @@
 import { SceneView } from '../components/SceneView';
 import { Banner } from '../components/Banner';
-import { PlayIcon, InfinityIcon, GridIcon, FlameIcon, GalleryIcon, SettingsIcon } from '../components/icons';
+import {
+  PlayIcon,
+  InfinityIcon,
+  GridIcon,
+  FlameIcon,
+  GalleryIcon,
+  SettingsIcon,
+} from '../components/icons';
 import { sceneForDate } from '../game/scenes';
 import { localDateKey } from '../lib/rng';
 import { getStreak, isDailyDone } from '../lib/storage';
@@ -17,7 +24,11 @@ function hoursToMidnight(): string {
 }
 
 function prettyDate(): string {
-  return new Date().toLocaleDateString(undefined, { weekday: 'short', day: 'numeric', month: 'short' });
+  return new Date().toLocaleDateString(undefined, {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  });
 }
 
 export function Home({ go }: { go: (s: Screen) => void }) {
@@ -46,20 +57,38 @@ export function Home({ go }: { go: (s: Screen) => void }) {
               <FlameIcon size={13} /> {streak.current}
             </span>
           </div>
-          <div className="rounded-xl overflow-hidden border border-[#21304d] mb-3" style={{ height: 84 }}>
-            <SceneView sceneId={scene.id} progress={done ? 1 : 0.32} className="w-full h-full block" />
+          <div
+            className="rounded-xl overflow-hidden border border-[#21304d] mb-3"
+            style={{ height: 84 }}
+          >
+            <SceneView
+              sceneId={scene.id}
+              progress={done ? 1 : 0.32}
+              className="w-full h-full block"
+            />
           </div>
           <div className="flex items-center justify-between">
             <span className="font-mono text-xs text-[#8593ad]">{prettyDate()}</span>
             <span
               className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium"
-              style={{ background: done ? 'transparent' : '#f5a623', color: done ? '#6ee7b7' : '#3a2606' }}
+              style={{
+                background: done ? 'transparent' : '#f5a623',
+                color: done ? '#6ee7b7' : '#3a2606',
+              }}
             >
-              {done ? 'Completed' : (<><PlayIcon size={15} /> Play today</>)}
+              {done ? (
+                'Completed'
+              ) : (
+                <>
+                  <PlayIcon size={15} /> Play today
+                </>
+              )}
             </span>
           </div>
           {!done && (
-            <div className="mt-2 text-right font-mono text-[10px] text-[#5d6b86]">resets in {hoursToMidnight()}</div>
+            <div className="mt-2 text-right font-mono text-[10px] text-[#5d6b86]">
+              resets in {hoursToMidnight()}
+            </div>
           )}
         </button>
 
@@ -85,10 +114,18 @@ export function Home({ go }: { go: (s: Screen) => void }) {
         </div>
 
         <div className="flex items-center justify-around border-t border-[#1a2540] pt-3 text-[#5d6b86]">
-          <button type="button" onClick={() => go('gallery')} className="p-2 flex flex-col items-center gap-1 text-xs">
+          <button
+            type="button"
+            onClick={() => go('gallery')}
+            className="p-2 flex flex-col items-center gap-1 text-xs"
+          >
             <GalleryIcon size={20} /> Gallery
           </button>
-          <button type="button" onClick={() => go('settings')} className="p-2 flex flex-col items-center gap-1 text-xs">
+          <button
+            type="button"
+            onClick={() => go('settings')}
+            className="p-2 flex flex-col items-center gap-1 text-xs"
+          >
             <SettingsIcon size={20} /> Settings
           </button>
         </div>
