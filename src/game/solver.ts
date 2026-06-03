@@ -62,9 +62,9 @@ export function findDeductions(
   const cNeed: number[] = [];
   for (let i = 0; i < N; i++) {
     if (state[i] !== 1 || g.adj[i] === 0) continue;
-    let need = g.adj[i];
+    let need = g.adj[i] ?? 0;
     const vars: number[] = [];
-    for (const n of nbrs[i]) {
+    for (const n of nbrs[i] ?? []) {
       if (state[n] === 2) need--;
       else if (state[n] === 0) vars.push(n);
     }
@@ -80,27 +80,37 @@ export function findDeductions(
 
   // 1. Trivial.
   for (let k = 0; k < cVars.length; k++) {
-    if (cNeed[k] === 0) for (const v of cVars[k]) safe.add(v);
-    else if (cNeed[k] === cVars[k].length) for (const v of cVars[k]) mine.add(v);
+    const vars = cVars[k];
+    if (vars === undefined) continue;
+    if (cNeed[k] === 0) for (const v of vars) safe.add(v);
+    else if (cNeed[k] === vars.length) for (const v of vars) mine.add(v);
   }
 
   // 2. Subset.
   if (safe.size === 0 && mine.size === 0) {
     const sets = cVars.map((v) => new Set(v));
     for (let a = 0; a < cVars.length; a++) {
+      const va = cVars[a];
+      const sa = sets[a];
+      const na = cNeed[a];
+      if (va === undefined || sa === undefined || na === undefined) continue;
       for (let b = 0; b < cVars.length; b++) {
         if (a === b) continue;
-        if (cVars[a].length >= cVars[b].length) continue;
+        const vb = cVars[b];
+        const sb = sets[b];
+        const nb = cNeed[b];
+        if (vb === undefined || sb === undefined || nb === undefined) continue;
+        if (va.length >= vb.length) continue;
         let subset = true;
-        for (const v of cVars[a]) {
-          if (!sets[b].has(v)) {
+        for (const v of va) {
+          if (!sb.has(v)) {
             subset = false;
             break;
           }
         }
         if (!subset) continue;
-        const diff = cVars[b].filter((v) => !sets[a].has(v));
-        const need = cNeed[b] - cNeed[a];
+        const diff = vb.filter((v) => !sa.has(v));
+        const need = nb - na;
         if (need === 0) for (const v of diff) safe.add(v);
         else if (need === diff.length) for (const v of diff) mine.add(v);
       }
@@ -131,7 +141,7 @@ export function solveNoGuess(g: SolveGrid, open: number): boolean {
       if (state[i] === 1) continue;
       state[i] = 1;
       if (g.adj[i] === 0) {
-        for (const n of nbrs[i]) if (state[n] === 0) stack.push(n);
+        for (const n of nbrs[i] ?? []) if (state[n] === 0) stack.push(n);
       }
     }
   };
@@ -181,11 +191,16 @@ function enumerateDeduce(
   const adjList: Set<number>[] = varList.map(() => new Set<number>());
   for (const vars of cVars) {
     for (let i = 0; i < vars.length; i++) {
+      const vi = vars[i];
+      if (vi === undefined) continue;
       for (let j = i + 1; j < vars.length; j++) {
-        const a = varIndex.get(vars[i])!;
-        const b = varIndex.get(vars[j])!;
-        adjList[a].add(b);
-        adjList[b].add(a);
+        const vj = vars[j];
+        if (vj === undefined) continue;
+        const a = varIndex.get(vi);
+        const b = varIndex.get(vj);
+        if (a === undefined || b === undefined) continue;
+        adjList[a]?.add(b);
+        adjList[b]?.add(a);
       }
     }
   }
@@ -200,9 +215,10 @@ function enumerateDeduce(
     comp[i] = id;
     const members: number[] = [];
     while (queue.length) {
-      const x = queue.pop()!;
+      const x = queue.pop();
+      if (x === undefined) break;
       members.push(x);
-      for (const y of adjList[x]) if (comp[y] === -1) {
+      for (const y of adjList[x] ?? []) if (comp[y] === -1) {
         comp[y] = id;
         queue.push(y);
       }
@@ -235,15 +251,21 @@ function enumerateDeduce(
       compData.push({ members, solutions: [], sums: [] });
       continue;
     }
-    const memberCells = members.map((m) => varList[m]);
     const cellPos = new Map<number, number>();
-    memberCells.forEach((cell, i) => cellPos.set(cell, i));
+    members.forEach((m, i) => {
+      const cell = varList[m];
+      if (cell !== undefined) cellPos.set(cell, i);
+    });
 
     // Constraints fully inside this component.
     const localC: { idx: number[]; need: number }[] = [];
     for (let k = 0; k < cVars.length; k++) {
-      if (cellPos.has(cVars[k][0])) {
-        localC.push({ idx: cVars[k].map((v) => cellPos.get(v)!), need: cNeed[k] });
+      const vk = cVars[k];
+      const nk = cNeed[k];
+      if (vk === undefined || nk === undefined) continue;
+      const first = vk[0];
+      if (first !== undefined && cellPos.has(first)) {
+        localC.push({ idx: vk.map((v) => cellPos.get(v) ?? -1), need: nk });
       }
     }
 
@@ -265,8 +287,9 @@ function enumerateDeduce(
       const bits = new Uint8Array(n);
       let sum = 0;
       for (let p = 0; p < n; p++) {
-        bits[p] = (mask >> p) & 1;
-        sum += bits[p];
+        const bit = (mask >> p) & 1;
+        bits[p] = bit;
+        sum += bit;
       }
       // Respect the global cap: a component can't hold more mines than remain.
       if (sum > remainingMines) continue;
@@ -293,7 +316,7 @@ function enumerateDeduce(
     for (let ci = 0; ci < compData.length; ci++) {
       if (ci === excl) continue;
       const cd = compData[ci];
-      if (cd.solutions.length === 0) continue;
+      if (cd === undefined || cd.solutions.length === 0) continue;
       const uniqueSums = new Set(cd.sums);
       const next = new Set<number>();
       for (const base of acc) for (const s of uniqueSums) next.add(base + s);
@@ -310,11 +333,13 @@ function enumerateDeduce(
   // reach the remaining mine total: exists t with t <= remainingMines - m <= t + offFrontier.
   for (let ci = 0; ci < compData.length; ci++) {
     const cd = compData[ci];
-    if (cd.solutions.length === 0) continue;
+    if (cd === undefined || cd.solutions.length === 0) continue;
     const others = sumsExcept(ci);
     const feasibleSol: Uint8Array[] = [];
     for (let si = 0; si < cd.solutions.length; si++) {
+      const sol = cd.solutions[si];
       const m = cd.sums[si];
+      if (sol === undefined || m === undefined) continue;
       let feasible = false;
       for (const t of others) {
         const rem = remainingMines - m - t;
@@ -323,7 +348,7 @@ function enumerateDeduce(
           break;
         }
       }
-      if (feasible) feasibleSol.push(cd.solutions[si]);
+      if (feasible) feasibleSol.push(sol);
     }
     if (feasibleSol.length === 0) continue;
     for (let p = 0; p < cd.members.length; p++) {
@@ -333,7 +358,10 @@ function enumerateDeduce(
         if (sol[p] === 1) all0 = false;
         else all1 = false;
       }
-      const cell = varList[cd.members[p]];
+      const memberIdx = cd.members[p];
+      if (memberIdx === undefined) continue;
+      const cell = varList[memberIdx];
+      if (cell === undefined) continue;
       if (all0) safe.push(cell);
       else if (all1) mine.push(cell);
     }

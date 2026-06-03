@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { GameView } from '../components/GameView';
 import { boardSource } from '../game/boardSource';
 import { difficultyById } from '../game/difficulties';
-import { SCENES } from '../game/scenes';
+import { sceneForIndex } from '../game/scenes';
 import {
   addCoins,
   getCoins,
@@ -18,7 +18,7 @@ function difficultyForLevel(level: number) {
   if (level <= 5) return difficultyById('medium');
   return difficultyById('hard');
 }
-const sceneForLevel = (level: number) => SCENES[(level - 1) % SCENES.length].id;
+const sceneForLevel = (level: number) => sceneForIndex(level - 1).id;
 
 export function EndlessScreen({ onExit }: { onExit: () => void }) {
   const [level, setLevel] = useState(1);

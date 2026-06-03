@@ -38,8 +38,9 @@ function gridFrom(board: Board, d: Difficulty): SolveGrid {
   for (let r = 0; r < d.rows; r++)
     for (let c = 0; c < d.cols; c++) {
       const i = r * d.cols + c;
-      mine[i] = board[r][c].isMine ? 1 : 0;
-      adj[i] = board[r][c].adjacent;
+      const cell = board[r]?.[c];
+      mine[i] = cell?.isMine ? 1 : 0;
+      adj[i] = cell?.adjacent ?? 0;
     }
   return { rows: d.rows, cols: d.cols, mines: d.mines, mine, adj };
 }
@@ -161,7 +162,7 @@ export function useGame(opts: Opts) {
   const reveal = useCallback(
     (r: number, c: number) => {
       if (status === 'loading' || status === 'won' || status === 'lost') return;
-      if (flagMode && !board[r][c].isRevealed) {
+      if (flagMode && !board[r]?.[c]?.isRevealed) {
         beginIfNeeded();
         buzz('Medium');
         setBoard((b) => toggleFlagEngine(b, r, c));
@@ -190,7 +191,7 @@ export function useGame(opts: Opts) {
   const toggleFlag = useCallback(
     (r: number, c: number) => {
       if (status !== 'playing' && status !== 'ready') return;
-      if (board[r][c].isRevealed) return;
+      if (board[r]?.[c]?.isRevealed) return;
       beginIfNeeded();
       buzz('Medium');
       setBoard((b) => toggleFlagEngine(b, r, c));
@@ -226,8 +227,9 @@ export function useGame(opts: Opts) {
     for (let r = 0; r < difficulty.rows; r++)
       for (let c = 0; c < difficulty.cols; c++) {
         const i = r * difficulty.cols + c;
-        if (board[r][c].isRevealed) state[i] = 1;
-        else if (board[r][c].isFlagged) state[i] = 2;
+        const cell = board[r]?.[c];
+        if (cell?.isRevealed) state[i] = 1;
+        else if (cell?.isFlagged) state[i] = 2;
       }
     let target = -1;
     const { safe } = findDeductions(g, state);

@@ -21,6 +21,15 @@ function cloneBoard(board: Board): Board {
   return board.map((row) => row.map((cell) => ({ ...cell })));
 }
 
+// Accessor that encodes the rectangular-grid invariant: every caller indexes
+// with in-bounds coordinates, so a miss is a programming error, not a runtime
+// case to handle. Returns the live Cell object — mutation through it is intended.
+function cellAt(board: Board, r: number, c: number): Cell {
+  const cell = board[r]?.[c];
+  if (cell === undefined) throw new RangeError(`cell out of range: ${r},${c}`);
+  return cell;
+}
+
 function neighbours(r: number, c: number, rows: number, cols: number): [number, number][] {
   const out: [number, number][] = [];
   for (let dr = -1; dr <= 1; dr++) {
@@ -71,22 +80,29 @@ export function placeMines(
   // Fisher-Yates shuffle, then take the first `mines`.
   for (let i = pool.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    const pi = pool[i];
+    const pj = pool[j];
+    if (pi !== undefined && pj !== undefined) {
+      pool[i] = pj;
+      pool[j] = pi;
+    }
   }
   for (let i = 0; i < d.mines; i++) {
-    const [r, c] = pool[i];
-    next[r][c].isMine = true;
+    const rc = pool[i];
+    if (rc === undefined) continue;
+    cellAt(next, rc[0], rc[1]).isMine = true;
   }
 
   // Compute adjacency counts.
   for (let r = 0; r < d.rows; r++) {
     for (let c = 0; c < d.cols; c++) {
-      if (next[r][c].isMine) continue;
+      const target = cellAt(next, r, c);
+      if (target.isMine) continue;
       let count = 0;
       for (const [nr, nc] of neighbours(r, c, d.rows, d.cols)) {
-        if (next[nr][nc].isMine) count++;
+        if (cellAt(next, nr, nc).isMine) count++;
       }
-      next[r][c].adjacent = count;
+      target.adjacent = count;
     }
   }
 
@@ -97,27 +113,30 @@ export function placeMines(
 // board and whether a mine was hit.
 export function reveal(board: Board, r: number, c: number): { board: Board; hitMine: boolean } {
   const rows = board.length;
-  const cols = board[0].length;
-  const cell = board[r][c];
+  const cols = board[0]?.length ?? 0;
+  const cell = cellAt(board, r, c);
   if (cell.isRevealed || cell.isFlagged) return { board, hitMine: false };
 
   const next = cloneBoard(board);
 
-  if (next[r][c].isMine) {
-    next[r][c].isRevealed = true;
-    next[r][c].exploded = true;
+  const start = cellAt(next, r, c);
+  if (start.isMine) {
+    start.isRevealed = true;
+    start.exploded = true;
     return { board: next, hitMine: true };
   }
 
   const stack: [number, number][] = [[r, c]];
   while (stack.length) {
-    const [cr, cc] = stack.pop()!;
-    const cur = next[cr][cc];
+    const top = stack.pop();
+    if (top === undefined) break;
+    const [cr, cc] = top;
+    const cur = cellAt(next, cr, cc);
     if (cur.isRevealed || cur.isFlagged || cur.isMine) continue;
     cur.isRevealed = true;
     if (cur.adjacent === 0) {
       for (const [nr, nc] of neighbours(cr, cc, rows, cols)) {
-        const n = next[nr][nc];
+        const n = cellAt(next, nr, nc);
         if (!n.isRevealed && !n.isFlagged && !n.isMine) stack.push([nr, nc]);
       }
     }
@@ -127,10 +146,11 @@ export function reveal(board: Board, r: number, c: number): { board: Board; hitM
 }
 
 export function toggleFlag(board: Board, r: number, c: number): Board {
-  const cell = board[r][c];
+  const cell = cellAt(board, r, c);
   if (cell.isRevealed) return board;
   const next = cloneBoard(board);
-  next[r][c].isFlagged = !next[r][c].isFlagged;
+  const t = cellAt(next, r, c);
+  t.isFlagged = !t.isFlagged;
   return next;
 }
 
@@ -138,18 +158,18 @@ export function toggleFlag(board: Board, r: number, c: number): Board {
 // neighbours. Returns the new board and whether a mine was hit (wrong flags).
 export function chord(board: Board, r: number, c: number): { board: Board; hitMine: boolean } {
   const rows = board.length;
-  const cols = board[0].length;
-  const cell = board[r][c];
+  const cols = board[0]?.length ?? 0;
+  const cell = cellAt(board, r, c);
   if (!cell.isRevealed || cell.adjacent === 0) return { board, hitMine: false };
 
   const ns = neighbours(r, c, rows, cols);
-  const flagged = ns.filter(([nr, nc]) => board[nr][nc].isFlagged).length;
+  const flagged = ns.filter(([nr, nc]) => cellAt(board, nr, nc).isFlagged).length;
   if (flagged !== cell.adjacent) return { board, hitMine: false };
 
   let working = board;
   let hitMine = false;
   for (const [nr, nc] of ns) {
-    const n = working[nr][nc];
+    const n = cellAt(working, nr, nc);
     if (!n.isFlagged && !n.isRevealed) {
       const res = reveal(working, nr, nc);
       working = res.board;

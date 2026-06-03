@@ -8,7 +8,9 @@ export const DIFFICULTIES: Difficulty[] = [
   { id: 'hard', name: 'Hard', cols: 13, rows: 18, mines: 48 },
 ];
 
-export const DEFAULT_DIFFICULTY = DIFFICULTIES[0];
+const FIRST_DIFFICULTY = DIFFICULTIES[0];
+if (!FIRST_DIFFICULTY) throw new Error('DIFFICULTIES must contain at least one entry');
+export const DEFAULT_DIFFICULTY: Difficulty = FIRST_DIFFICULTY;
 
 export function difficultyById(id: string): Difficulty {
   return DIFFICULTIES.find((d) => d.id === id) ?? DEFAULT_DIFFICULTY;

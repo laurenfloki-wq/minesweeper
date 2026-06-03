@@ -1,6 +1,6 @@
 interface IconProps {
-  size?: number;
-  className?: string;
+  size?: number | undefined;
+  className?: string | undefined;
 }
 
 function S({ size = 20, className, children }: IconProps & { children: React.ReactNode }) {

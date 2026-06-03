@@ -43,10 +43,18 @@ function placeMinesFlat(d: Difficulty, open: number, rng: Rng): SolveGrid {
   // Fisher-Yates with the supplied rng.
   for (let i = pool.length - 1; i > 0; i--) {
     const j = randInt(rng, i + 1);
-    [pool[i], pool[j]] = [pool[j], pool[i]];
+    const pi = pool[i];
+    const pj = pool[j];
+    if (pi !== undefined && pj !== undefined) {
+      pool[i] = pj;
+      pool[j] = pi;
+    }
   }
   const count = Math.min(mines, pool.length);
-  for (let i = 0; i < count; i++) mine[pool[i]] = 1;
+  for (let i = 0; i < count; i++) {
+    const p = pool[i];
+    if (p !== undefined) mine[p] = 1;
+  }
 
   for (let i = 0; i < N; i++) {
     if (mine[i]) continue;
@@ -75,7 +83,7 @@ function gridToBoard(g: SolveGrid): Board {
       const i = r * g.cols + c;
       const cell = emptyCell();
       cell.isMine = g.mine[i] === 1;
-      cell.adjacent = g.adj[i];
+      cell.adjacent = g.adj[i] ?? 0;
       row.push(cell);
     }
     board.push(row);
