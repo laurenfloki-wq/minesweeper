@@ -1,0 +1,9 @@
+# Default owner for everything in this repo.
+* @laurenfloki-wq
+
+# The no-guess invariant is the crown jewel — flag any change to the engine,
+# its tests, or the CI gate that protects it for extra scrutiny.
+/src/game/solver.ts      @laurenfloki-wq
+/src/game/generator.ts   @laurenfloki-wq
+/tools/solver-test.ts    @laurenfloki-wq
+/.github/workflows/      @laurenfloki-wq
